@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aditya Tiwari — Azure & DevOps Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050508;
+    --bg2: #08080f;
+    --surface: rgba(255,255,255,0.03);
+    --surface2: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --text: #e8e8f0;
+    --text2: #8888a8;
+    --text3: #444466;
+    --glow: rgba(0, 212, 255, 0.15);
+    --glow2: rgba(124, 58, 237, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  #cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width .2s, height .2s, background .2s;
+    mix-blend-mode: difference;
+  }
+  #cursor-ring {
+    width: 40px; height: 40px;
+    border: 1px solid rgba(0,212,255,0.4);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all .12s ease;
+  }
+  body:has(a:hover, button:hover) #cursor { width: 20px; height: 20px; }
+  body:has(a:hover, button:hover) #cursor-ring { width: 60px; height: 60px; border-color: rgba(0,212,255,0.6); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  /* AURORA BG */
+  #aurora {
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .aurora-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.12;
+    animation: drift 20s ease-in-out infinite alternate;
+  }
+  .ab1 { width: 600px; height: 600px; background: #00d4ff; top: -200px; left: -200px; animation-delay: 0s; }
+  .ab2 { width: 500px; height: 500px; background: #7c3aed; top: 40%; right: -150px; animation-delay: -7s; }
+  .ab3 { width: 400px; height: 400px; background: #10b981; bottom: -100px; left: 30%; animation-delay: -14s; }
+  .ab4 { width: 300px; height: 300px; background: #f59e0b; top: 60%; left: 10%; animation-delay: -4s; }
+
+  @keyframes drift {
+    0% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(40px,-30px) scale(1.05); }
+    66% { transform: translate(-20px,40px) scale(0.95); }
+    100% { transform: translate(30px,20px) scale(1.02); }
+  }
+
+  /* GRID LINES */
+  #grid-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 16px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(5,5,8,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: all .3s;
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 18px;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -1px;
+  }
+  .nav-logo span { color: var(--text2); }
+  .nav-links { display: flex; gap: 8px; list-style: none; }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: all .2s;
+    border: 1px solid transparent;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    border-color: rgba(0,212,255,0.2);
+  }
+  .nav-cta {
+    background: var(--accent);
+    color: var(--bg) !important;
+    border-color: transparent !important;
+    font-weight: 700;
+  }
+  .nav-cta:hover { background: #00b8d9 !important; color: var(--bg) !important; }
+
+  /* HAMBURGER */
+  .hamburger {
+    display: none;
+    flex-direction: column; gap: 5px;
+    cursor: none; background: none; border: none; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 2px;
+    background: var(--text); border-radius: 2px;
+    transition: all .3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed; top: 65px; left: 0; right: 0;
+    background: rgba(5,5,8,0.97);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    z-index: 999;
+    flex-direction: column;
+    padding: 20px;
+    gap: 4px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Space Mono', monospace; font-size: 13px;
+    color: var(--text2); text-decoration: none;
+    padding: 12px 16px; border-radius: 8px;
+    transition: all .2s; letter-spacing: 0.5px;
+    border: 1px solid transparent;
+  }
+  .mobile-menu a:hover, .mobile-menu a.active {
+    color: var(--accent); background: rgba(0,212,255,0.08);
+    border-color: rgba(0,212,255,0.15);
+  }
+
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+  }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; }
+
+  /* HERO */
+  #home {
+    min-height: 100vh;
+    display: flex; align-items: center; flex-direction: column; justify-content: center;
+    padding: 120px 40px 80px;
+  }
+  #home > .hero-inner {
+    max-width: 1400px; width: 100%; margin: 0 auto;
+  }
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    width: 100%;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -3px;
+    margin-bottom: 16px;
+  }
+  .hero-name .first { color: var(--text); }
+  .hero-name .last {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .role-flipper {
+    height: 52px; overflow: hidden; margin-bottom: 24px;
+  }
+  .role-track {
+    animation: flipRoles 9s infinite;
+  }
+  .role-item {
+    height: 52px; display: flex; align-items: center;
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 600;
+  }
+  .role-item span {
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  @keyframes flipRoles {
+    0%, 28% { transform: translateY(0); }
+    33%, 61% { transform: translateY(-52px); }
+    66%, 94% { transform: translateY(-104px); }
+    99%, 100% { transform: translateY(0); }
+  }
+
+  .hero-desc {
+    color: var(--text2);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 480px;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-primary {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    border: none; border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: none;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all .2s;
+    letter-spacing: 0.5px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,212,255,0.3); }
+  .btn-ghost {
+    padding: 14px 32px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    cursor: none;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all .2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  /* 3D CANVAS PLACEHOLDER */
+  .hero-canvas {
+    position: relative; height: 500px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #three-canvas { width: 100%; height: 100%; border-radius: 20px; }
+
+  .fps-widget {
+    position: absolute; top: 20px; right: 20px;
+    background: rgba(5,5,8,0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent3);
+    min-width: 130px;
+  }
+  .fps-widget .fps-val {
+    font-size: 22px; font-weight: 700; color: var(--accent3);
+    display: block;
+  }
+  .fps-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .fps-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent3), var(--accent)); border-radius: 2px; transition: width 1s; }
+
+  .hero-scroll-hint {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--text2); font-family: 'Space Mono', monospace; font-size: 10px;
+    letter-spacing: 2px; animation: bounce 2s infinite;
+    margin-top: 60px;
+  }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .scroll-line { width: 1px; height: 40px; background: linear-gradient(var(--accent), transparent); }
+
+  /* SECTION WRAPPER */
+  .section-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 40px;
+  }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 16px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; max-width: 60px;
+    height: 1px; background: var(--accent);
+    opacity: 0.5;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 60px;
+  }
+  .section-title .accent {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* GLASS CARD */
+  .glass-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    transition: all .3s;
+  }
+  .glass-card:hover {
+    border-color: var(--border2);
+    background: var(--surface2);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .about-bio {
+    padding: 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+  }
+  .about-bio p {
+    color: var(--text2);
+    line-height: 1.8;
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .about-bio p strong { color: var(--text); }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .stat-card {
+    padding: 28px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+    transition: all .3s;
+  }
+  .stat-card:hover { border-color: rgba(0,212,255,0.3); background: rgba(0,212,255,0.04); }
+  .stat-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block; margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 0.5px;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 40px;
+  }
+  .bento-item {
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: all .3s;
+  }
+  .bento-item:hover { border-color: var(--border2); background: var(--surface2); }
+  .bento-item:first-child { grid-column: span 2; }
+  .bento-icon {
+    font-size: 28px; margin-bottom: 12px; display: block;
+  }
+  .bento-item h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .bento-item p { color: var(--text2); font-size: 13px; line-height: 1.6; }
+
+  /* EXPERIENCE */
+  .timeline { position: relative; padding-left: 40px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(var(--accent), var(--accent2), transparent);
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 40px;
+    opacity: 0; transform: translateX(-20px);
+    transition: all .5s ease;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-dot {
+    position: absolute; left: -47px; top: 8px;
+    width: 14px; height: 14px;
+    background: var(--accent);
+    border: 3px solid var(--bg);
+    border-radius: 50%;
+    box-shadow: 0 0 16px var(--accent);
+  }
+  .timeline-card {
+    padding: 28px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    cursor: none;
+    transition: all .3s;
+  }
+  .timeline-card:hover { border-color: rgba(0,212,255,0.3); transform: translateX(8px); }
+  .timeline-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .timeline-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 700; margin-bottom: 4px;
+  }
+  .timeline-company {
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+  }
+  .timeline-date {
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .timeline-points { list-style: none; }
+  .timeline-points li {
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.7;
+    padding-left: 20px;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .timeline-points li::before {
+    content: '▸';
+    position: absolute; left: 0;
+    color: var(--accent);
+  }
+
+  .exp-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .exp-tag {
+    padding: 4px 12px;
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 20px;
+    font-size: 11px;
+    color: #a78bfa;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* EDUCATION */
+  .edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .edu-card {
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    position: relative; overflow: hidden;
+    transition: all .3s;
+  }
+  .edu-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .edu-card:hover { border-color: var(--border2); transform: translateY(-6px); }
+  .edu-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.2);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent3);
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .edu-inst {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .edu-degree { color: var(--accent); font-size: 14px; margin-bottom: 4px; }
+  .edu-year { color: var(--text2); font-family: 'Space Mono', monospace; font-size: 12px; margin-bottom: 16px; }
+  .cgpa-bar { margin-top: 16px; }
+  .cgpa-label {
+    display: flex; justify-content: space-between;
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    color: var(--text2); margin-bottom: 6px;
+  }
+  .cgpa-label span:last-child { color: var(--accent3); }
+  .cgpa-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .cgpa-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent));
+    border-radius: 3px;
+    transition: width 1.5s ease;
+  }
+
+  /* SKILLS */
+  .skills-domain { margin-bottom: 48px; }
+  .domain-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .domain-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .skills-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .skill-pill {
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    transition: all .2s;
+    cursor: none;
+    border: 1px solid;
+    position: relative; overflow: hidden;
+  }
+  .skill-pill::before {
+    content: ''; position: absolute; inset: 0;
+    background: currentColor; opacity: 0;
+    transition: opacity .2s;
+  }
+  .skill-pill:hover { transform: translateY(-3px) scale(1.03); }
+  .skill-pill:hover::before { opacity: 0.08; }
+  .skill-azure { color: #0080ff; border-color: rgba(0,128,255,0.25); background: rgba(0,128,255,0.06); }
+  .skill-azure:hover { box-shadow: 0 6px 24px rgba(0,128,255,0.25); }
+  .skill-devops { color: var(--accent); border-color: rgba(0,212,255,0.25); background: rgba(0,212,255,0.06); }
+  .skill-devops:hover { box-shadow: 0 6px 24px rgba(0,212,255,0.25); }
+  .skill-data { color: #f59e0b; border-color: rgba(245,158,11,0.25); background: rgba(245,158,11,0.06); }
+  .skill-data:hover { box-shadow: 0 6px 24px rgba(245,158,11,0.25); }
+  .skill-monitor { color: var(--accent3); border-color: rgba(16,185,129,0.25); background: rgba(16,185,129,0.06); }
+  .skill-monitor:hover { box-shadow: 0 6px 24px rgba(16,185,129,0.25); }
+  .skill-soft { color: #a78bfa; border-color: rgba(167,139,250,0.25); background: rgba(167,139,250,0.06); }
+  .skill-soft:hover { box-shadow: 0 6px 24px rgba(167,139,250,0.25); }
+
+  /* PROJECTS */
+  .project-filter {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .filter-btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    cursor: none;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    transition: all .2s;
+    letter-spacing: 0.5px;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: rgba(0,212,255,0.08);
+    border-color: rgba(0,212,255,0.3);
+    color: var(--accent);
+  }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+  }
+  .project-card {
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    position: relative; overflow: hidden;
+    transition: all .3s;
+  }
+  .project-card::after {
+    content: ''; position: absolute;
+    top: -50%; right: -50%;
+    width: 100%; height: 100%;
+    background: radial-gradient(circle, rgba(0,212,255,0.05) 0%, transparent 70%);
+    opacity: 0; transition: opacity .3s;
+  }
+  .project-card:hover::after { opacity: 1; }
+  .project-card:hover { border-color: rgba(0,212,255,0.3); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .project-type {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .project-desc { color: var(--text2); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .project-tag {
+    padding: 3px 10px;
+    background: rgba(124,58,237,0.1);
+    border-radius: 4px;
+    font-size: 11px; color: #a78bfa;
+    font-family: 'Space Mono', monospace;
+  }
+  .project-links { display: flex; gap: 12px; }
+  .project-link {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; color: var(--accent);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 4px;
+    transition: all .2s;
+  }
+  .project-link:hover { color: var(--text); }
+
+  /* ACHIEVEMENTS */
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .cert-card {
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+    transition: all .3s;
+    position: relative; overflow: hidden;
+  }
+  .cert-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(0,212,255,0.06) 0%, transparent 60%);
+  }
+  .cert-card:hover { border-color: rgba(0,212,255,0.4); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,212,255,0.1); }
+  .cert-icon { font-size: 40px; margin-bottom: 16px; display: block; }
+  .cert-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 700; margin-bottom: 8px;
+  }
+  .cert-issuer { color: var(--accent); font-size: 13px; margin-bottom: 4px; }
+  .cert-year { color: var(--text2); font-family: 'Space Mono', monospace; font-size: 11px; }
+
+  /* CONTACT */
+  #contact { background: linear-gradient(180deg, transparent, rgba(0,212,255,0.03)); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .github-frame {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .github-frame-bar {
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot-red { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
+  .dot-yellow { width: 10px; height: 10px; border-radius: 50%; background: #ffbd2e; }
+  .dot-green { width: 10px; height: 10px; border-radius: 50%; background: #28ca41; }
+  .github-frame-url {
+    flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 10px;
+    font-family: 'Space Mono', monospace; font-size: 11px; color: var(--text2);
+    text-align: center;
+  }
+  .github-content { padding: 24px; }
+  .github-profile {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+  }
+  .github-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: white;
+    border: 2px solid var(--border2);
+  }
+  .github-name {
+    font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
+  }
+  .github-handle { color: var(--text2); font-family: 'Space Mono', monospace; font-size: 12px; }
+  .contrib-heatmap {
+    display: grid;
+    grid-template-columns: repeat(52, 1fr);
+    gap: 2px; margin-top: 16px;
+  }
+  .contrib-week { display: flex; flex-direction: column; gap: 2px; }
+  .contrib-day {
+    width: 100%; aspect-ratio: 1;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.04);
+  }
+  .contrib-day.l1 { background: rgba(0,212,255,0.2); }
+  .contrib-day.l2 { background: rgba(0,212,255,0.4); }
+  .contrib-day.l3 { background: rgba(0,212,255,0.65); }
+  .contrib-day.l4 { background: rgba(0,212,255,0.9); }
+
+  .github-stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-top: 20px;
+  }
+  .gh-stat {
+    text-align: center; padding: 12px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .gh-stat-num {
+    font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700;
+    color: var(--accent); display: block; margin-bottom: 2px;
+  }
+  .gh-stat-label { font-size: 11px; color: var(--text2); }
+
+  /* CONTACT FORM */
+  .contact-form { display: flex; flex-direction: column; gap: 20px; }
+  .form-field { position: relative; }
+  .form-field label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text2); margin-bottom: 8px;
+  }
+  .form-input, .form-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: all .3s;
+    resize: none;
+  }
+  .form-input:focus, .form-textarea:focus {
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.04);
+    box-shadow: 0 0 0 3px rgba(0,212,255,0.1), 0 0 30px rgba(0,212,255,0.08);
+  }
+  .form-textarea { height: 140px; }
+  .form-submit {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; border: none; border-radius: 10px;
+    font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700;
+    cursor: none; transition: all .2s; letter-spacing: 1px;
+  }
+  .form-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,212,255,0.3); }
+  .form-submit:disabled { opacity: 0.6; }
+  #form-message {
+    font-size: 13px; font-family: 'Space Mono', monospace;
+    text-align: center; padding: 10px;
+    border-radius: 8px; display: none;
+  }
+  .form-success { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid rgba(16,185,129,0.2); }
+  .form-error { background: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    text-align: center;
+    color: var(--text2);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* SERVICES */
+  .services-bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 200px;
+    gap: 16px;
+  }
+  .service-card {
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    position: relative; overflow: hidden;
+    transition: all .4s cubic-bezier(.34,1.56,.64,1);
+    cursor: none;
+  }
+  .service-card:hover {
+    transform: perspective(600px) rotateX(-5deg) rotateY(5deg) translateY(-6px);
+    border-color: var(--border2);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .service-card.large { grid-column: span 2; }
+  .service-card.tall { grid-row: span 2; }
+  .service-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+  .service-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700; margin-bottom: 8px;
+  }
+  .service-desc { color: var(--text2); font-size: 13px; line-height: 1.6; }
+  .service-price {
+    position: absolute; bottom: 24px; right: 24px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; color: var(--accent);
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 8px; padding: 4px 10px;
+  }
+
+  /* MODAL */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(5,5,8,0.85);
+    backdrop-filter: blur(20px);
+    z-index: 2000;
+    display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    max-width: 640px; width: 100%;
+    background: #0d0d18;
+    border: 1px solid var(--border2);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+    animation: modalIn .3s cubic-bezier(.34,1.56,.64,1);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal-close {
+    position: absolute; top: 20px; right: 20px;
+    width: 32px; height: 32px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 50%; cursor: none;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--text2);
+    transition: all .2s;
+  }
+  .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+  .modal h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px; font-weight: 800; margin-bottom: 4px;
+  }
+  .modal .modal-company { color: var(--accent); font-size: 14px; margin-bottom: 20px; font-family: 'Space Mono', monospace; }
+  .modal ul { list-style: none; }
+  .modal ul li {
+    color: var(--text2); font-size: 14px; line-height: 1.7;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    padding-left: 20px; position: relative;
+  }
+  .modal ul li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-canvas { height: 300px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .bento-grid { grid-template-columns: 1fr 1fr; }
+    .bento-item:first-child { grid-column: span 1; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .services-bento { grid-template-columns: 1fr 1fr; }
+    .service-card.large { grid-column: span 1; }
+    #home { padding: 100px 20px 60px; }
+    .section-wrapper { padding: 60px 20px; }
+  }
+  @media (max-width: 600px) {
+    .services-bento { grid-template-columns: 1fr; }
+    .bento-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="aurora">
+  <div class="aurora-blob ab1"></div>
+  <div class="aurora-blob ab2"></div>
+  <div class="aurora-blob ab3"></div>
+  <div class="aurora-blob ab4"></div>
+</div>
+<div id="grid-bg"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#home" class="nav-logo">AT<span>.dev</span></a>
+  <ul class="nav-links">
+    <li><a href="#home" data-section="home">Home</a></li>
+    <li><a href="#about" data-section="about">About</a></li>
+    <li><a href="#experience" data-section="experience">Experience</a></li>
+    <li><a href="#education" data-section="education">Education</a></li>
+    <li><a href="#skills" data-section="skills">Skills</a></li>
+    <li><a href="#projects" data-section="projects">Projects</a></li>
+    <li><a href="#achievements" data-section="achievements">Certs</a></li>
+    <li><a href="#services" data-section="services">Services</a></li>
+    <li><a href="#contact" data-section="contact" class="nav-cta">Hire Me</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#home" onclick="closeMobileMenu()">Home</a>
+  <a href="#about" onclick="closeMobileMenu()">About</a>
+  <a href="#experience" onclick="closeMobileMenu()">Experience</a>
+  <a href="#education" onclick="closeMobileMenu()">Education</a>
+  <a href="#skills" onclick="closeMobileMenu()">Skills</a>
+  <a href="#projects" onclick="closeMobileMenu()">Projects</a>
+  <a href="#achievements" onclick="closeMobileMenu()">Certifications</a>
+  <a href="#services" onclick="closeMobileMenu()">Services</a>
+  <a href="#contact" onclick="closeMobileMenu()" style="color:var(--accent)">Hire Me →</a>
+</div>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge reveal">🚀 AVAILABLE FOR OPPORTUNITIES</div>
+      <div class="hero-name reveal reveal-delay-1">
+        <div class="first">Aditya</div>
+        <div class="last">Tiwari</div>
+      </div>
+      <div class="role-flipper reveal reveal-delay-2">
+        <div class="role-track">
+          <div class="role-item"><span>Azure Cloud Engineer</span></div>
+          <div class="role-item"><span>DevOps Specialist</span></div>
+          <div class="role-item"><span>Infrastructure Architect</span></div>
+        </div>
+      </div>
+      <p class="hero-desc reveal reveal-delay-3">
+        Optimizing cloud infrastructure at scale. Specializing in Azure environments, identity management, automated deployments & infrastructure-as-code — ensuring high availability across production systems.
+      </p>
+      <div class="hero-actions reveal reveal-delay-4">
+        <a href="#projects" class="btn-primary">View Projects ↗</a>
+        <a href="#contact" class="btn-ghost">Get In Touch →</a>
+      </div>
+      <div class="hero-scroll-hint reveal">
+        <span>SCROLL</span>
+        <div class="scroll-line"></div>
+      </div>
+    </div>
+    <div class="hero-canvas">
+      <canvas id="three-canvas"></canvas>
+      <div class="fps-widget">
+        <span style="font-size:10px;color:var(--text2);letter-spacing:1px;">RENDER / FPS</span>
+        <span class="fps-val" id="fps-display">60</span>
+        <div style="font-size:10px;color:var(--text2)">WebGL Active</div>
+        <div class="fps-bar">
+          <div class="fps-bar-fill" id="fps-bar" style="width:100%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-wrapper">
+    <div class="section-label reveal">01 — About</div>
+    <h2 class="section-title reveal reveal-delay-1">Crafting <span class="accent">Cloud</span><br>Infrastructure</h2>
+    <div class="about-grid">
+      <div class="about-bio reveal reveal-delay-2">
+        <p>Hi, I'm <strong>Aditya Tiwari</strong> — a cloud & infrastructure engineer based in Lucknow, India. I specialize in designing and maintaining robust Azure cloud environments that power business-critical applications.</p>
+        <p>Currently at <strong>Technocart Business Machine</strong>, I manage Azure infrastructure end-to-end: from identity & access management with <strong>Microsoft Entra ID</strong>, to automated deployments via <strong>ARM Templates</strong> and IaC pipelines.</p>
+        <p>My approach is data-driven: I believe in monitoring everything, automating repetitive operations, and continuously optimizing for cost and performance. Every resource should justify its existence.</p>
+      </div>
+      <div>
+        <div class="stats-grid reveal reveal-delay-3">
+          <div class="stat-card">
+            <span class="stat-num" data-count="2">0</span>
+            <div class="stat-label">Years Experience</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" data-count="15">0</span>
+            <div class="stat-label">Projects Deployed</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" data-count="3">0</span>
+            <div class="stat-label">Azure Projects</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" data-count="2">0</span>
+            <div class="stat-label">Certifications</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bento-grid">
+      <div class="bento-item reveal">
+        <span class="bento-icon">☁️</span>
+        <h4>Cloud-First Mindset</h4>
+        <p>Azure is not just a platform — it's an operating model. I architect solutions that leverage native Azure services for maximum reliability, scalability, and cost efficiency.</p>
+      </div>
+      <div class="bento-item reveal reveal-delay-1">
+        <span class="bento-icon">🔐</span>
+        <h4>Zero-Trust Security</h4>
+        <p>RBAC, Entra ID, and least-privilege access across all environments. Security isn't a feature — it's a foundational design principle.</p>
+      </div>
+      <div class="bento-item reveal reveal-delay-2">
+        <span class="bento-icon">⚡</span>
+        <h4>Automation Over Everything</h4>
+        <p>If it's done twice, it should be automated. PowerShell, ARM templates, Terraform — reducing human error and deployment time simultaneously.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-wrapper">
+    <div class="section-label reveal">02 — Experience</div>
+    <h2 class="section-title reveal reveal-delay-1">Work <span class="accent">History</span></h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card" onclick="openModal('technocart')">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-role">Support Engineer</div>
+              <div class="timeline-company">Technocart Business Machine</div>
+            </div>
+            <div class="timeline-date">Jul 2023 – Present</div>
+          </div>
+          <ul class="timeline-points">
+            <li>Managed and optimized Azure Cloud environments ensuring high availability for client applications</li>
+            <li>Maintained Microsoft 365 services integrated with Microsoft Entra ID for identity & access management</li>
+            <li>Managed Azure Data Lakes using IaC with automated scaling via ARM templates</li>
+            <li>Monitored infrastructure with Azure Monitor, Log Analytics, and Application Insights</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="exp-tag">Azure Portal</span>
+            <span class="exp-tag">Azure CLI</span>
+            <span class="exp-tag">PowerShell</span>
+            <span class="exp-tag">Entra ID</span>
+            <span class="exp-tag">ARM Templates</span>
+            <span class="exp-tag">Log Analytics</span>
+          </div>
+          <div style="margin-top:12px; font-family:'Space Mono',monospace; font-size:11px; color:var(--accent2);">← Click to expand</div>
+        </div>
+      </div>
+
+      <div class="timeline-item" style="transition-delay:.2s">
+        <div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 16px var(--accent2)"></div>
+        <div class="timeline-card" onclick="openModal('technip')">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-role">Cloud & IAM Intern</div>
+              <div class="timeline-company">Technip FMC</div>
+            </div>
+            <div class="timeline-date">May 2022 – Jul 2022</div>
+          </div>
+          <ul class="timeline-points">
+            <li>Managed user accounts & access permissions using Azure Entra ID Directory</li>
+            <li>Implemented Azure Backup solutions and conducted disaster recovery drills</li>
+            <li>Performed cost analysis using Azure Cost Management and Azure Advisor</li>
+            <li>Designed and enforced Azure RBAC and custom IAM policies</li>
+          </ul>
+          <div class="exp-tags">
+            <span class="exp-tag">Azure Entra ID</span>
+            <span class="exp-tag">RBAC</span>
+            <span class="exp-tag">Azure Backup</span>
+            <span class="exp-tag">Cost Management</span>
+            <span class="exp-tag">IAM</span>
+          </div>
+          <div style="margin-top:12px; font-family:'Space Mono',monospace; font-size:11px; color:var(--accent2);">← Click to expand</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-wrapper">
+    <div class="section-label reveal">03 — Education</div>
+    <h2 class="section-title reveal reveal-delay-1">Academic <span class="accent">Background</span></h2>
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <div class="edu-badge">🎓 B.Tech</div>
+        <div class="edu-inst">Shri Shankracharya Technical Campus</div>
+        <div class="edu-degree">B.Tech — Computer Science</div>
+        <div class="edu-year">📍 Bhilai · 2019 – 2023</div>
+        <div class="cgpa-bar">
+          <div class="cgpa-label"><span>CGPA</span><span id="cgpa1">7.9 / 10</span></div>
+          <div class="cgpa-track"><div class="cgpa-fill" style="width:0%" data-width="79%"></div></div>
+        </div>
+      </div>
+
+      <div class="edu-card reveal reveal-delay-1">
+        <div class="edu-badge">📚 12th Grade</div>
+        <div class="edu-inst">Marry Gardiner's Convent School</div>
+        <div class="edu-degree">Secondary High School</div>
+        <div class="edu-year">2018 – 2019</div>
+        <div class="cgpa-bar">
+          <div class="cgpa-label"><span>CGPA</span><span>6.0 / 10</span></div>
+          <div class="cgpa-track"><div class="cgpa-fill" style="width:0%" data-width="60%"></div></div>
+        </div>
+      </div>
+
+      <div class="edu-card reveal reveal-delay-2">
+        <div class="edu-badge">📗 10th Grade</div>
+        <div class="edu-inst">Marry Gardiner's Convent School</div>
+        <div class="edu-degree">High School</div>
+        <div class="edu-year">2016 – 2017</div>
+        <div class="cgpa-bar">
+          <div class="cgpa-label"><span>CGPA</span><span>9.3 / 10</span></div>
+          <div class="cgpa-track"><div class="cgpa-fill" style="width:0%" data-width="93%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-wrapper">
+    <div class="section-label reveal">04 — Skills</div>
+    <h2 class="section-title reveal reveal-delay-1">Technical <span class="accent">Arsenal</span></h2>
+
+    <div class="skills-domain reveal">
+      <div class="domain-title"><span class="domain-dot" style="background:#0080ff"></span>Cloud & Azure Platform</div>
+      <div class="skills-pills">
+        <span class="skill-pill skill-azure">Azure Cloud</span>
+        <span class="skill-pill skill-azure">Microsoft Entra ID</span>
+        <span class="skill-pill skill-azure">Azure Resource Manager</span>
+        <span class="skill-pill skill-azure">Azure DevOps</span>
+        <span class="skill-pill skill-azure">Azure Data Lake</span>
+        <span class="skill-pill skill-azure">Azure Data Factory (ADF)</span>
+        <span class="skill-pill skill-azure">Azure Backup</span>
+        <span class="skill-pill skill-azure">Azure Portal</span>
+      </div>
+    </div>
+
+    <div class="skills-domain reveal">
+      <div class="domain-title"><span class="domain-dot" style="background:var(--accent)"></span>DevOps & Automation</div>
+      <div class="skills-pills">
+        <span class="skill-pill skill-devops">Infrastructure as Code (IaC)</span>
+        <span class="skill-pill skill-devops">ARM Templates</span>
+        <span class="skill-pill skill-devops">Terraform</span>
+        <span class="skill-pill skill-devops">PowerShell</span>
+        <span class="skill-pill skill-devops">Azure CLI</span>
+        <span class="skill-pill skill-devops">Jenkins</span>
+        <span class="skill-pill skill-devops">GitHub</span>
+        <span class="skill-pill skill-devops">CI/CD Pipelines</span>
+      </div>
+    </div>
+
+    <div class="skills-domain reveal">
+      <div class="domain-title"><span class="domain-dot" style="background:#f59e0b"></span>Data & Programming</div>
+      <div class="skills-pills">
+        <span class="skill-pill skill-data">Python</span>
+        <span class="skill-pill skill-data">PySpark</span>
+        <span class="skill-pill skill-data">SQL</span>
+        <span class="skill-pill skill-data">Data Warehousing</span>
+        <span class="skill-pill skill-data">ETL Pipelines</span>
+      </div>
+    </div>
+
+    <div class="skills-domain reveal">
+      <div class="domain-title"><span class="domain-dot" style="background:var(--accent3)"></span>Monitoring & Observability</div>
+      <div class="skills-pills">
+        <span class="skill-pill skill-monitor">Azure Monitor</span>
+        <span class="skill-pill skill-monitor">Log Analytics</span>
+        <span class="skill-pill skill-monitor">Application Insights</span>
+        <span class="skill-pill skill-monitor">Diagnostics Settings</span>
+        <span class="skill-pill skill-monitor">Alerting & Dashboards</span>
+      </div>
+    </div>
+
+    <div class="skills-domain reveal">
+      <div class="domain-title"><span class="domain-dot" style="background:#a78bfa"></span>Security & Identity</div>
+      <div class="skills-pills">
+        <span class="skill-pill skill-soft">RBAC</span>
+        <span class="skill-pill skill-soft">Zero Trust</span>
+        <span class="skill-pill skill-soft">IAM Policies</span>
+        <span class="skill-pill skill-soft">User Provisioning</span>
+        <span class="skill-pill skill-soft">Access Control</span>
+        <span class="skill-pill skill-soft">Compliance</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-wrapper">
+    <div class="section-label reveal">05 — Projects</div>
+    <h2 class="section-title reveal reveal-delay-1">Built <span class="accent">in the Cloud</span></h2>
+
+    <div class="project-filter reveal">
+      <button class="filter-btn active" data-filter="all">All Projects</button>
+      <button class="filter-btn" data-filter="featured">Featured</button>
+      <button class="filter-btn" data-filter="iac">IaC</button>
+      <button class="filter-btn" data-filter="monitoring">Monitoring</button>
+      <button class="filter-btn" data-filter="identity">Identity</button>
+    </div>
+
+    <div class="projects-grid" id="projects-grid">
+      <div class="project-card reveal" data-category="featured iac">
+        <div class="project-type" style="color:var(--accent)">⚡ FEATURED</div>
+        <div class="project-title">Automated Azure Infrastructure Deployment</div>
+        <p class="project-desc">End-to-end infrastructure automation using ARM Templates across multiple Azure Resource Groups. Implements full IaC principles eliminating manual configuration drift and reducing deployment time by 70%.</p>
+        <div class="project-tags">
+          <span class="project-tag">ARM Templates</span>
+          <span class="project-tag">IaC</span>
+          <span class="project-tag">PowerShell</span>
+          <span class="project-tag">Azure Resource Groups</span>
+          <span class="project-tag">Virtual Networks</span>
+        </div>
+        <div class="project-links">
+          <span class="project-link">ARM Template IaC →</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal reveal-delay-1" data-category="featured monitoring">
+        <div class="project-type" style="color:#10b981">📊 MONITORING</div>
+        <div class="project-title">Centralized Monitoring & Alerting System</div>
+        <p class="project-desc">Unified observability platform built on Azure Monitor stack. Aggregates telemetry from production and staging environments with proactive alerting on performance thresholds and anomaly detection.</p>
+        <div class="project-tags">
+          <span class="project-tag">Azure Monitor</span>
+          <span class="project-tag">Log Analytics</span>
+          <span class="project-tag">Application Insights</span>
+          <span class="project-tag">Alerts</span>
+          <span class="project-tag">Diagnostics</span>
+        </div>
+        <div class="project-links">
+          <span class="project-link">Monitoring Stack →</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal reveal-delay-2" data-category="identity">
+        <div class="project-type" style="color:#a78bfa">🔐 SECURITY</div>
+        <div class="project-title">IAM using Azure Entra ID & RBAC</div>
+        <p class="project-desc">Comprehensive identity and access management solution using Azure Entra ID. Implements role-based access controls, streamlines onboarding/offboarding workflows, and enforces compliance across all departments.</p>
+        <div class="project-tags">
+          <span class="project-tag">Azure Entra ID</span>
+          <span class="project-tag">RBAC</span>
+          <span class="project-tag">Azure CLI</span>
+          <span class="project-tag">Azure Portal</span>
+          <span class="project-tag">IAM Policies</span>
+        </div>
+        <div class="project-links">
+          <span class="project-link">Identity System →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="section-wrapper">
+    <div class="section-label reveal">06 — Achievements</div>
+    <h2 class="section-title reveal reveal-delay-1">Certs & <span class="accent">Milestones</span></h2>
+
+    <div class="cert-grid">
+      <div class="cert-card reveal">
+        <span class="cert-icon">🏅</span>
+        <div class="cert-title">Microsoft Certified Professional</div>
+        <div class="cert-issuer">Microsoft</div>
+        <div class="cert-year">MCP Certification</div>
+      </div>
+
+      <div class="cert-card reveal reveal-delay-1">
+        <span class="cert-icon">☁️</span>
+        <div class="cert-title">MCSE: Cloud Platform & Architecture</div>
+        <div class="cert-issuer">Microsoft</div>
+        <div class="cert-year">Cloud Infrastructure Certification</div>
+      </div>
+
+      <div class="cert-card reveal reveal-delay-2">
+        <span class="cert-icon">🎓</span>
+        <div class="cert-title">B.Tech Computer Science</div>
+        <div class="cert-issuer">Shri Shankracharya Technical Campus</div>
+        <div class="cert-year">GPA: 7.9 · 2023</div>
+      </div>
+
+      <div class="cert-card reveal reveal-delay-3">
+        <span class="cert-icon">⚡</span>
+        <div class="cert-title">Azure Infrastructure Architect</div>
+        <div class="cert-issuer">Technocart Business Machine</div>
+        <div class="cert-year">Production Deployments · 2023–Present</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-wrapper">
+    <div class="section-label reveal">07 — Services</div>
+    <h2 class="section-title reveal reveal-delay-1">What I <span class="accent">Offer</span></h2>
+
+    <div class="services-bento">
+      <div class="service-card large reveal">
+        <span class="service-icon">☁️</span>
+        <div class="service-title">Azure Cloud Architecture & Migration</div>
+        <p class="service-desc">End-to-end Azure infrastructure design, deployment, and migration. From ARM template authoring to full environment setup with monitoring, security, and cost optimization baked in from day one.</p>
+        <div class="service-price">Contact for pricing</div>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <span class="service-icon">🔐</span>
+        <div class="service-title">IAM & Security Consulting</div>
+        <p class="service-desc">Azure Entra ID setup, RBAC policy design, and zero-trust security frameworks for your organization.</p>
+        <div class="service-price">Per project</div>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <span class="service-icon">🤖</span>
+        <div class="service-title">DevOps Automation</div>
+        <p class="service-desc">CI/CD pipeline setup, IaC with Terraform/ARM, and PowerShell automation to eliminate manual ops toil.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <span class="service-icon">📊</span>
+        <div class="service-title">Observability & Monitoring</div>
+        <p class="service-desc">Azure Monitor, Log Analytics & Application Insights dashboards tailored to your production stack.</p>
+      </div>
+      <div class="service-card reveal reveal-delay-4">
+        <span class="service-icon">💰</span>
+        <div class="service-title">Cloud Cost Optimization</div>
+        <p class="service-desc">Azure Advisor-driven right-sizing, reserved instances, and usage audits to cut your cloud bill significantly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-wrapper">
+    <div class="section-label reveal">08 — Contact</div>
+    <h2 class="section-title reveal reveal-delay-1">Let's <span class="accent">Connect</span></h2>
+
+    <div class="contact-grid">
+      <!-- GitHub Frame -->
+      <div class="github-frame reveal">
+        <div class="github-frame-bar">
+          <div class="dot-red"></div>
+          <div class="dot-yellow"></div>
+          <div class="dot-green"></div>
+          <div class="github-frame-url">github.com/adityatiwari</div>
+        </div>
+        <div class="github-content">
+          <div class="github-profile">
+            <div class="github-avatar">AT</div>
+            <div>
+              <div class="github-name">Aditya Tiwari</div>
+              <div class="github-handle">@adityatiwari · Lucknow, India</div>
+            </div>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text2);margin-bottom:8px;">CONTRIBUTION ACTIVITY</div>
+          <div class="contrib-heatmap" id="heatmap"></div>
+          <div class="github-stats-row">
+            <div class="gh-stat">
+              <span class="gh-stat-num">24</span>
+              <div class="gh-stat-label">Repos</div>
+            </div>
+            <div class="gh-stat">
+              <span class="gh-stat-num">3</span>
+              <div class="gh-stat-label">PRs Merged</div>
+            </div>
+            <div class="gh-stat">
+              <span class="gh-stat-num">12</span>
+              <div class="gh-stat-label">Stars</div>
+            </div>
+          </div>
+          <div style="margin-top:20px">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--text2);margin-bottom:12px;">REACH ME DIRECTLY</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:center;gap:10px;color:var(--text2);font-size:13px">
+                <span>📧</span> <span>adtiyaa122@gmail.com</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;color:var(--text2);font-size:13px">
+                <span>📱</span> <span>+91 9214839825</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;color:var(--text2);font-size:13px">
+                <span>🌐</span> <span>LinkedIn: Aditya Tiwari</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;color:var(--text2);font-size:13px">
+                <span>📍</span> <span>Lucknow, India</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="reveal reveal-delay-2">
+        <div style="margin-bottom:28px">
+          <h3 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px">Send a Message</h3>
+          <p style="color:var(--text2);font-size:14px">Have a project in mind or want to discuss cloud infrastructure? I respond within 24 hours.</p>
+        </div>
+        <form class="contact-form" id="contact-form" onsubmit="handleSubmit(event)">
+          <div class="form-field">
+            <label>Your Name</label>
+            <input type="text" class="form-input" id="cf-name" placeholder="John Doe" required>
+          </div>
+          <div class="form-field">
+            <label>Email Address</label>
+            <input type="email" class="form-input" id="cf-email" placeholder="john@company.com" required>
+          </div>
+          <div class="form-field">
+            <label>Subject</label>
+            <input type="text" class="form-input" id="cf-subject" placeholder="Azure infrastructure project">
+          </div>
+          <div class="form-field">
+            <label>Message</label>
+            <textarea class="form-textarea" id="cf-message" placeholder="Tell me about your project, timeline, and requirements..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="submit-btn">SEND MESSAGE →</button>
+          <div id="form-message"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Crafted with ☁️ by <strong style="color:var(--text)">Aditya Tiwari</strong> · Azure Cloud Engineer · <a href="mailto:adtiyaa122@gmail.com">adtiyaa122@gmail.com</a></p>
+  <p style="margin-top:8px;font-size:10px;opacity:0.4">© 2025 · Lucknow, India · Available for remote opportunities</p>
+</footer>
+
+<!-- MODALS -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ============================
+// CURSOR
+// ============================
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animateCursor() {
+  rx += (mx - rx) * 0.15;
+  ry += (my - ry) * 0.15;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+  cursorRing.style.left = rx + 'px';
+  cursorRing.style.top = ry + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+// ============================
+// THREE.JS — HERO SCENE
+// ============================
+(function() {
+  const canvas = document.getElementById('three-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+  camera.position.z = 4;
+
+  function resize() {
+    const w = canvas.parentElement.offsetWidth;
+    const h = canvas.parentElement.offsetHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Wireframe torus knot
+  const geometry = new THREE.TorusKnotGeometry(1.2, 0.35, 120, 20);
+  const material = new THREE.MeshBasicMaterial({
+    color: 0x00d4ff, wireframe: true, opacity: 0.6, transparent: true
+  });
+  const torusKnot = new THREE.Mesh(geometry, material);
+  scene.add(torusKnot);
+
+  // Inner sphere
+  const sphereGeo = new THREE.SphereGeometry(0.5, 16, 16);
+  const sphereMat = new THREE.MeshBasicMaterial({
+    color: 0x7c3aed, wireframe: true, opacity: 0.4, transparent: true
+  });
+  const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+  scene.add(sphere);
+
+  // Particles
+  const particleCount = 800;
+  const positions = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos((Math.random() * 2) - 1);
+    const r = 2.5 + Math.random() * 1.5;
+    positions[i*3] = r * Math.sin(phi) * Math.cos(theta);
+    positions[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
+    positions[i*3+2] = r * Math.cos(phi);
+  }
+  const particleGeo = new THREE.BufferGeometry();
+  particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const particleMat = new THREE.PointsMaterial({ color: 0x00d4ff, size: 0.025, transparent: true, opacity: 0.5 });
+  const particles = new THREE.Points(particleGeo, particleMat);
+  scene.add(particles);
+
+  // Mouse tracking
+  let mouseX = 0, mouseY = 0;
+  canvas.parentElement.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    mouseY = -((e.clientY - rect.top) / rect.height - 0.5) * 2;
+  });
+
+  let fps = 60, frameCount = 0, lastTime = performance.now();
+  const fpsDisplay = document.getElementById('fps-display');
+  const fpsBar = document.getElementById('fps-bar');
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.005;
+
+    torusKnot.rotation.x += 0.004;
+    torusKnot.rotation.y += 0.006;
+    torusKnot.rotation.x += mouseY * 0.003;
+    torusKnot.rotation.y += mouseX * 0.003;
+
+    sphere.rotation.x -= 0.008;
+    sphere.rotation.z += 0.005;
+
+    particles.rotation.y += 0.001;
+    particles.rotation.x = mouseY * 0.1;
+    particles.rotation.z = mouseX * 0.1;
+
+    renderer.render(scene, camera);
+
+    // FPS counter
+    frameCount++;
+    const now = performance.now();
+    if (now - lastTime >= 1000) {
+      fps = frameCount;
+      frameCount = 0;
+      lastTime = now;
+      fpsDisplay.textContent = fps;
+      fpsBar.style.width = Math.min((fps / 60) * 100, 100) + '%';
+    }
+  }
+  animate();
+})();
+
+// ============================
+// SCROLL REVEAL
+// ============================
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => revealObserver.observe(el));
+
+// Timeline items
+const timelineItems = document.querySelectorAll('.timeline-item');
+const tlObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+timelineItems.forEach(el => tlObserver.observe(el));
+
+// ============================
+// STAT COUNTER
+// ============================
+const statNums = document.querySelectorAll('.stat-num[data-count]');
+const statObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.counted) {
+      e.target.dataset.counted = '1';
+      const target = parseInt(e.target.dataset.count);
+      let current = 0;
+      const steps = 40;
+      const increment = Math.max(1, Math.ceil(target / steps));
+      const timer = setInterval(() => {
+        current = Math.min(current + increment, target);
+        e.target.textContent = current + (e.target.dataset.suffix || '');
+        if (current >= target) clearInterval(timer);
+      }, 40);
+    }
+  });
+}, { threshold: 0.5 });
+statNums.forEach(el => statObserver.observe(el));
+
+// ============================
+// CGPA BARS
+// ============================
+const cgpaFills = document.querySelectorAll('.cgpa-fill[data-width]');
+const cgpaObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.width = e.target.dataset.width;
+    }
+  });
+}, { threshold: 0.3 });
+cgpaFills.forEach(el => cgpaObserver.observe(el));
+
+// ============================
+// GITHUB HEATMAP
+// ============================
+function generateHeatmap() {
+  const heatmap = document.getElementById('heatmap');
+  const levels = [0,0,0,1,1,2,2,3,4];
+  for (let w = 0; w < 52; w++) {
+    const week = document.createElement('div');
+    week.className = 'contrib-week';
+    for (let d = 0; d < 7; d++) {
+      const day = document.createElement('div');
+      const level = Math.random() < 0.35 ? levels[Math.floor(Math.random() * levels.length)] : 0;
+      day.className = 'contrib-day' + (level > 0 ? ' l' + level : '');
+      week.appendChild(day);
+    }
+    heatmap.appendChild(week);
+  }
+}
+generateHeatmap();
+
+// ============================
+// ACTIVE NAV
+// ============================
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a[data-section]');
+const sectionObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`.nav-links a[data-section="${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s => sectionObserver.observe(s));
+
+// ============================
+// PROJECT FILTER
+// ============================
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.project-card').forEach(card => {
+      if (filter === 'all' || card.dataset.category.includes(filter)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+
+// ============================
+// MODALS
+// ============================
+const modalData = {
+  technocart: {
+    title: 'Support Engineer',
+    company: 'Technocart Business Machine · Lucknow · Jul 2023 – Present',
+    points: [
+      'Managed and optimized Azure Cloud environments, ensuring high availability and performance for client applications using Azure Portal, Azure CLI, and PowerShell automation.',
+      'Maintained and monitored Microsoft 365 services and integrated them with Microsoft Entra ID for identity and access management, including user provisioning, role assignments, and access control.',
+      'Managed Azure Data Lakes and Data Warehouses using IaC, implementing automated scaling and cost optimization strategies through Azure Resource Manager (ARM) templates and CLI tools.',
+      'Monitored Azure infrastructure using Azure Monitor, Log Analytics, and Application Insights, proactively identifying performance bottlenecks and ensuring high system availability across production and staging environments.',
+      'Collaborated with cross-functional teams to troubleshoot cloud and identity-related issues using Azure Monitor, Log Analytics, and PowerShell-based diagnostics, improving system reliability and response time.',
+    ]
+  },
+  technip: {
+    title: 'Cloud & IAM Intern',
+    company: 'Technip FMC · Hyderabad · May 2022 – Jul 2022',
+    points: [
+      'Managed user accounts and access permissions using Azure Entra ID Directory, ensuring compliance with organizational security policies and streamlining onboarding/offboarding processes across departments.',
+      'Implemented and maintained Azure Backup solutions, ensuring data integrity and availability. Regularly conducted disaster recovery drills to validate business continuity plans.',
+      'Performed regular cost analysis using Azure Cost Management and Azure Advisor, optimizing resource utilization through virtual machine right-sizing.',
+      'Collaborated with security teams to design and enforce Azure RBAC and custom IAM policies, enhancing role-based access controls and reducing unauthorized access incidents within the Azure environment.',
+    ]
+  }
+};
+
+function openModal(id) {
+  const data = modalData[id];
+  if (!data) return;
+  document.getElementById('modal-body').innerHTML = `
+    <h2>${data.title}</h2>
+    <div class="modal-company">${data.company}</div>
+    <ul>${data.points.map(p => `<li>${p}</li>`).join('')}</ul>
+  `;
+  document.getElementById('modal-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-backdrop')) closeModalBtn();
+}
+function closeModalBtn() {
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalBtn(); });
+
+// ============================
+// CONTACT FORM
+// ============================
+async function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const msgEl = document.getElementById('form-message');
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const subject = document.getElementById('cf-subject').value.trim() || 'Portfolio Contact';
+  const message = document.getElementById('cf-message').value.trim();
+
+  btn.textContent = 'SENDING...';
+  btn.disabled = true;
+  msgEl.style.display = 'none';
+
+  // Simulate brief processing
+  await new Promise(r => setTimeout(r, 800));
+
+  // Open mailto as the reliable delivery method
+  const body = encodeURIComponent(`Hi Aditya,\n\nMy name is ${name}.\n\n${message}\n\nReply to: ${email}`);
+  const mailtoLink = `mailto:adtiyaa122@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+  window.location.href = mailtoLink;
+
+  msgEl.className = 'form-success';
+  msgEl.textContent = `✓ Your email client has opened! Send the email to reach Aditya. He'll respond within 24 hours.`;
+  msgEl.style.display = 'block';
+  document.getElementById('contact-form').reset();
+
+  btn.textContent = 'SEND MESSAGE →';
+  btn.disabled = false;
+}
+
+// ============================
+// SMOOTH SCROLL
+// ============================
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ============================
+// HAMBURGER MENU
+// ============================
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+// Close on outside click
+document.addEventListener('click', e => {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.getElementById('hamburger');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    closeMobileMenu();
+  }
+});
+</script>
+</body>
+</html>
